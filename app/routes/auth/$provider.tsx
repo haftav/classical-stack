@@ -1,10 +1,10 @@
-import type { ActionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { ActionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 
-import { authenticator } from "~/server/auth.server";
+import { authenticator } from '~/server/auth.server';
 
-export let loader = () => redirect("/login");
+export let loader = () => redirect('/login');
 
 export let action = ({ request, params }: ActionArgs) => {
-  return authenticator.authenticate(params.provider as string, request);
+    return authenticator.authenticate(params.provider as string, request);
 };

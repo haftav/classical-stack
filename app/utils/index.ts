@@ -1,3 +1,3 @@
 export function getDomain() {
-  return process.env.DOMAIN;
+    return process.env.DOMAIN;
 }

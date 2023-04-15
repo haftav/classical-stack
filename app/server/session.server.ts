@@ -1,15 +1,15 @@
-import { authenticator } from "./auth.server";
+import { authenticator } from './auth.server';
 
 export async function getUserSession(request: Request) {
-  const user = await authenticator.isAuthenticated(request);
+    const user = await authenticator.isAuthenticated(request);
 
-  return user;
+    return user;
 }
 
 export async function requireUserSession(request: Request) {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+    const user = await authenticator.isAuthenticated(request, {
+        failureRedirect: '/login',
+    });
 
-  return user;
+    return user;
 }
