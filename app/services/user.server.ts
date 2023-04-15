@@ -1,4 +1,4 @@
-import { db } from '~/server/db.server';
+import { db } from '@/server/db.server';
 
 export async function findUserByEmail(email: string) {
     return await db

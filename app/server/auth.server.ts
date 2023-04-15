@@ -1,11 +1,11 @@
 import { Authenticator } from 'remix-auth';
 import { GoogleStrategy, SocialsProvider } from 'remix-auth-socials';
 
-import { sessionStorage } from '~/lib/session-storage.server';
+import { sessionStorage } from '@/lib/session-storage.server';
 
-import { createUser, findUserByEmail } from '~/services/user.server';
+import { createUser, findUserByEmail } from '@/services/user.server';
 
-import { getDomain } from '~/utils';
+import { getDomain } from '@/utils';
 
 interface User {
     id: number;

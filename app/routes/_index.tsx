@@ -1,10 +1,10 @@
 import type { LoaderArgs } from '@remix-run/node';
-import type { User } from '~/models';
+import type { User } from '@/models';
 
 import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
-import { getUserSession } from '~/server/session.server';
+import { getUserSession } from '@/server/session.server';
 
 export async function loader({ request }: LoaderArgs) {
     const user = await getUserSession(request);
