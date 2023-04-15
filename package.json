@@ -15,7 +15,7 @@
     "db:reset": "npx dbmate drop && npm run db:migrate:up",
     "format": "npx prettier --write ./app",
     "start": "cross-env NODE_ENV=production node -r dotenv/config ./server.js",
-    "typecheck": "tsc"
+    "types": "tsc"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.2",
