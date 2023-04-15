@@ -1,37 +1,29 @@
+import type { DB } from "kysely-codegen";
+
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 
-import type { UserTable } from "~/models";
-
-interface Database {
-  app_user: UserTable;
-}
-
-let db: Kysely<Database>;
+let db: Kysely<DB>;
 
 declare global {
   var __db: any;
 }
 
 if (process.env.NODE_ENV === "production") {
-  db = new Kysely<Database>({
+  db = new Kysely<DB>({
     dialect: new PostgresDialect({
       pool: new Pool({
-        host: "localhost",
-        database: "kysely_test",
+        connectionString: process.env.DATABASE_URL,
       }),
     }),
     log: ["error"],
   });
 } else {
   if (!global.__db) {
-    db = new Kysely<Database>({
+    db = new Kysely<DB>({
       dialect: new PostgresDialect({
         pool: new Pool({
-          host: "localhost",
-          database: process.env.POSTGRES_DB,
-          user: process.env.POSTGRES_USER,
-          password: process.env.POSTGRES_PASSWORD,
+          connectionString: process.env.DATABASE_URL,
         }),
       }),
       log: ["query", "error"],
