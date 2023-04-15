@@ -1,9 +1,17 @@
-export function findUserByEmail(email: string) {
-  // TODO: add implementation
-  return null;
+import { db } from "~/server/db.server";
+
+export async function findUserByEmail(email: string) {
+  return await db
+    .selectFrom("app_user")
+    .selectAll()
+    .where("email", "=", email)
+    .executeTakeFirst();
 }
 
-export function createUser(params: { email: string }) {
-  // TODO: add implementation
-  return null;
+export async function createUser(email: string) {
+  return await db
+    .insertInto("app_user")
+    .values({ email })
+    .returningAll()
+    .executeTakeFirstOrThrow();
 }

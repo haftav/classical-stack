@@ -1,9 +1,10 @@
 import type { LoaderArgs } from "@remix-run/node";
+import type { User } from "~/models";
 
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 
-import { getUserSession } from "~/services/session.server";
+import { getUserSession } from "~/server/auth.server";
 
 export async function loader({ request }: LoaderArgs) {
   const user = await getUserSession(request);
@@ -13,15 +14,24 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
-const LoggedIn = () => {
-  return <div className="container m-auto">Logged In</div>;
+const LoggedIn = (props: { user: User }) => {
+  const { user } = props;
+
+  return (
+    <div>
+      <div>Logged in as {user.email}</div>
+      <form method="post" action="/logout">
+        <button>Log Out</button>
+      </form>
+    </div>
+  );
 };
 
 const LoggedOut = () => {
   return (
-    <div className="w-full flex flex-col items-center pt-12 container">
+    <div>
+      <div>Logged Out</div>
       <Link to="/login">Log In</Link>
-      Logged Out
     </div>
   );
 };
@@ -29,5 +39,5 @@ const LoggedOut = () => {
 export default function Index() {
   const data = useLoaderData<typeof loader>();
 
-  return <div>{data.user ? <LoggedIn /> : <LoggedOut />}</div>;
+  return <div>{data.user ? <LoggedIn user={data.user} /> : <LoggedOut />}</div>;
 }

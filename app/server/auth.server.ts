@@ -1,5 +1,3 @@
-import type { User } from "~/models";
-
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy, SocialsProvider } from "remix-auth-socials";
 
@@ -9,7 +7,26 @@ import { sessionStorage } from "./session.server";
 
 import { getDomain } from "~/utils";
 
+interface User {
+  id: number;
+  email: string;
+}
+
 export const authenticator = new Authenticator<User>(sessionStorage);
+
+export async function getUserSession(request: Request) {
+  const user = await authenticator.isAuthenticated(request);
+
+  return user;
+}
+
+export async function requireUserSession(request: Request) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
+  return user;
+}
 
 const getCallback = (provider: SocialsProvider) => {
   return `${getDomain()}/auth/${provider}/callback`;
@@ -26,15 +43,13 @@ authenticator.use(
       const data = profile._json;
       const { email } = data;
 
-      let user = findUserByEmail(email);
+      let user = await findUserByEmail(email);
 
       if (!user) {
-        user = createUser({
-          email: data.email,
-        });
+        user = await createUser(email);
       }
 
-      return user as unknown as User; // TODO: fix
+      return user;
     }
   )
 );

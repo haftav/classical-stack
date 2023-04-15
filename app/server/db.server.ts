@@ -1,19 +1,41 @@
-import Database from "better-sqlite3";
+import { Pool } from "pg";
+import { Kysely, PostgresDialect } from "kysely";
 
-let db: InstanceType<typeof Database>;
+import type { UserTable } from "~/models";
+
+interface Database {
+  app_user: UserTable;
+}
+
+let db: Kysely<Database>;
 
 declare global {
   var __db: any;
 }
 
 if (process.env.NODE_ENV === "production") {
-  db = new Database(`${process.env.DATABASE_NAME}.db` as string);
+  db = new Kysely<Database>({
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        host: "localhost",
+        database: "kysely_test",
+      }),
+    }),
+    log: ["error"],
+  });
 } else {
   if (!global.__db) {
-    db = new Database(`${process.env.DATABASE_NAME}.db` as string, {
-      verbose: console.log,
+    db = new Kysely<Database>({
+      dialect: new PostgresDialect({
+        pool: new Pool({
+          host: "localhost",
+          database: process.env.POSTGRES_DB,
+          user: process.env.POSTGRES_USER,
+          password: process.env.POSTGRES_PASSWORD,
+        }),
+      }),
+      log: ["query", "error"],
     });
-    db.pragma("journal_mode = WAL");
     global.__db = db;
   }
   db = global.__db;
