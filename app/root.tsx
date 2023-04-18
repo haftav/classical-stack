@@ -1,4 +1,6 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction, LoaderArgs } from '@remix-run/node';
+
+import { json } from '@remix-run/node';
 import {
     Links,
     LiveReload,
@@ -6,7 +8,11 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
+    useLoaderData,
 } from '@remix-run/react';
+
+import { ThemeProvider, ThemeScript, Theme, isTheme } from '@/components/theme';
+import { parseTheme } from '@/lib/cookie.server';
 
 import styles from './tailwind.css';
 
@@ -18,15 +24,35 @@ export const meta: MetaFunction = () => ({
     viewport: 'width=device-width,initial-scale=1',
 });
 
+export async function loader({ request }: LoaderArgs) {
+    const cookies = request.headers.get('Cookie');
+    const themeData = parseTheme(cookies);
+
+    const theme: Theme = themeData && isTheme(themeData) ? themeData : 'system';
+
+    return json({
+        theme,
+    });
+}
+
 export default function App() {
+    const { theme } = useLoaderData<typeof loader>();
+
     return (
-        <html lang="en">
+        <html
+            lang="en"
+            className={theme === 'dark' ? 'dark' : ''}
+            suppressHydrationWarning
+        >
             <head>
+                <ThemeScript initialTheme={theme} />
                 <Meta />
                 <Links />
             </head>
             <body>
-                <Outlet />
+                <ThemeProvider value={theme}>
+                    <Outlet />
+                </ThemeProvider>
                 <ScrollRestoration />
                 <Scripts />
                 <LiveReload />
