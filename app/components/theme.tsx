@@ -30,7 +30,7 @@ export function useTheme() {
     return ctx;
 }
 
-export const ThemeScript = (props: { initialTheme: string | null }) => {
+export const ThemeScript = (props: { initialTheme: Theme | null }) => {
     const { initialTheme } = props;
 
     let script = React.useMemo(
@@ -66,6 +66,15 @@ function updateDocumentClass(theme: Theme) {
     }
 }
 
+function setClassOnDocument(theme: Theme) {
+    if (theme === 'system') {
+        const systemTheme = getSystemTheme();
+        updateDocumentClass(systemTheme);
+    } else {
+        updateDocumentClass(theme);
+    }
+}
+
 export const ThemeProvider = (props: {
     children: React.ReactNode;
     value: Theme;
@@ -76,14 +85,7 @@ export const ThemeProvider = (props: {
 
     const setTheme = (newTheme: Theme) => {
         setCookie(newTheme);
-
-        if (newTheme === 'system') {
-            const systemTheme = getSystemTheme();
-            updateDocumentClass(systemTheme);
-        } else {
-            updateDocumentClass(newTheme);
-        }
-
+        setClassOnDocument(newTheme);
         setThemeState(newTheme);
     };
 
