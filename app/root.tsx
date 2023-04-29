@@ -11,7 +11,8 @@ import {
     useLoaderData,
 } from '@remix-run/react';
 
-import { ThemeProvider, ThemeScript, Theme, isTheme } from '@/components/theme';
+import type { Theme} from '@/components/theme';
+import { ThemeProvider, ThemeScript, isTheme } from '@/components/theme';
 import { parseTheme } from '@/lib/cookie.server';
 
 import styles from './tailwind.css';
